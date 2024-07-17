@@ -14,8 +14,8 @@ def main():
 
     dataset = load_dataset('json', data_files=args.dataset, split='train')
 
-    if True: #"corrected" not in dataset.column_names:
-        #model, tokenizer = initialize_question_evaluator()
+    if "corrected" not in dataset.column_names:
+        model, tokenizer = initialize_question_evaluator()
         new_ds = []
         for d in tqdm(dataset):
             if d["answerable"] or d["correction"] == "":
@@ -47,19 +47,17 @@ def main():
                 d["correction_entities"] = []
             else:
                 question = question.split('?')[0].strip()+'?'
-                print(question)
-                print("="*10)
-                #d["corrected"] = evaluate_question(context, question, model, tokenizer)
-                #messages = [{"role": "system", "content": "You are an entity tagger. Your task is to list all the entities mentioned in the question provided by the user. Each entity should be on its own line."}, {"role": "user", "content": question}]
-                #out = query_chat(messages, "gpt-4", None)
-                #out = [one.strip() for one in out.split('\n')]
-                #d["correction_entities"] = out
+                d["corrected"] = evaluate_question(context, question, model, tokenizer)
+                messages = [{"role": "system", "content": "You are an entity tagger. Your task is to list all the entities mentioned in the question provided by the user. Each entity should be on its own line."}, {"role": "user", "content": question}]
+                out = query_chat(messages, "gpt-4", None)
+                out = [one.strip() for one in out.split('\n')]
+                d["correction_entities"] = out
                 d["entities"] = [x.lower() for x in d["entities"]]
                 d["correction_entities"] = [x.lower() for x in d["correction_entities"]]
                 d["entity_overlap"] = len([x for x in d["correction_entities"] if x in d["entities"]]) / len(d["entities"])
-                #a_emb = get_embedding(d["question"])
-                #b_emb = get_embedding(question)
-                #d["cosine_similarity"] = cosine_similarity([a_emb], [b_emb])[0][0]
+                a_emb = get_embedding(d["question"])
+                b_emb = get_embedding(question)
+                d["cosine_similarity"] = cosine_similarity([a_emb], [b_emb])[0][0]
             if args.verbose:
                 print(question)
                 print("old entities:", d["entities"])
@@ -73,7 +71,7 @@ def main():
 
         new_ds = Dataset.from_list(new_ds)
         name = f"answerable_check_{args.dataset}"
-        #new_ds.to_json(name)
+        new_ds.to_json(name)
     else:
         new_ds = dataset
     tot = len(new_ds) - sum(new_ds["answerable"])
