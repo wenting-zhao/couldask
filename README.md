@@ -57,7 +57,7 @@ If you find our work helpful, please use the following citations.
     zhao2024couldask,
     title={I Could've Asked That: Reformulating Unanswerable Questions},
     author={Wenting Zhao, Ge Gao, Claire Cardie, Alexander M Rush},
-    journal={},
+    journal={arXiv preprint arXiv:2407.17469},
     year={2024}
 }
 ```
