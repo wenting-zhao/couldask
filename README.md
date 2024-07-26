@@ -4,7 +4,7 @@
 
 <div align="center">
 
-| [Dataset](https://huggingface.co/datasets/wentingzhao/couldask) | [Paper]() |
+| [Dataset](https://huggingface.co/datasets/wentingzhao/couldask) | [Paper](https://arxiv.org/abs/2407.17469) |
 
 </div>
 
